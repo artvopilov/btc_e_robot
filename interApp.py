@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIcon, QFont, QPen, QPainter, QPaintDevice
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, Qt
 from BtceGo import *
 import time
+from ParseAndGraphics import *
 
 
 class NewApp(QMainWindow):
@@ -187,6 +188,10 @@ class NewApp(QMainWindow):
         btn1.clicked.connect(self.get_MainInf)
         btn1.setToolTip("Максимально возможная цена, минимально возможно цена, минимальное количество "
                         "валюты для выставления ордера")
+        btn1 = QPushButton("Графики курса", self)
+        btn1.setGeometry(l + 200, t, w, h + h)
+        btn1.clicked.connect(self.graphics)
+        btn1.setToolTip("Графики курсов по выбранным парам")
         t += h
         btn1 = QPushButton("Торги по выбранным паре(ам)", self)
         btn1.setGeometry(l, t, w, h)
@@ -268,14 +273,15 @@ class NewApp(QMainWindow):
         self.FlagAuth = 1
         resp = float(self.PA.get_Depth([self.tradePair], 10)[self.tradePair]["bids"][0][0])
         print(resp)
-        minPrice = float(self.PA.get_Info()["pairs"][self.tradePair]["min_price"])
+        #minPrice = float(self.PA.get_Info()["pairs"][self.tradePair]["min_price"])
+        minPrice = resp / 5000
         resp += minPrice
         response = self.TA.make_Money(self.tradePair, "buy", resp, float(self.amount))
         print(response, 111)
         if response["success"] == 1:
             orderId = response["return"]["order_id"]
             while orderId != 0 and self.UpOrd:
-                orderId, resp = self.UpdateOrder(orderId, resp, minPrice * 400)
+                orderId, resp = self.UpdateOrder(orderId, resp, minPrice * 14)
                 print(1111)
                 time.sleep(2)
 
@@ -298,6 +304,14 @@ class NewApp(QMainWindow):
 
     def CheckUp(self):
         self.UpOrd *= -1
+
+
+    def graphics(self):
+        pairsForGraphics = []
+        for pair in self.ChosenPairs.keys():
+            if self.ChosenPairs[pair] == 1:
+                pairsForGraphics.append(pair)
+        show_graphics(pairsForGraphics)
 
 
     def btn_MyAcc(self):
@@ -532,8 +546,9 @@ class NewApp(QMainWindow):
 
 
 if __name__ == '__main__':
-
-    app = QApplication(sys.argv)
-    ex = NewApp()
-    sys.exit(app.exec_())
-
+    try:
+        app = QApplication(sys.argv)
+        ex = NewApp()
+        sys.exit(app.exec_())
+    except requests.exceptions.ProxyError:
+        print("Proxy daesn't work")
