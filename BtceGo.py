@@ -15,8 +15,8 @@ proxies = {
 proxy_HTTPS = proxies["https"].split(":")[1][2:]
 proxy_HTTPS_port = proxies["https"].split(":")[2]
 
-BTC_key = "O5PDOEFO-EB873RDE-O8423SGH-G9II99WL-AQP9AW5A"
-BTC_secret = "0da54c14b44b9508ca2bfe5395f388a9ba74d8ab3e20a5a413bfbac9aec66e7f"
+BTC_key = ""
+BTC_secret = ""
 
 http_timeout = 15
 filer = open("nonce.txt", 'r')
