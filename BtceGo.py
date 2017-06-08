@@ -10,7 +10,7 @@ import requests
 url = "https://btc-e.com/api/3"
 proxies = {
     "http": "http://163.172.59.4:8080",
-    "https": 'https://124.158.9.32:3128',
+    "https": 'https://187.44.14.19:8080',
 }
 proxy_HTTPS = proxies["https"].split(":")[1][2:]
 proxy_HTTPS_port = proxies["https"].split(":")[2]
